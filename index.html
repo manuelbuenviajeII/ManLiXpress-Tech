@@ -1712,6 +1712,128 @@
         flex: 2;
       }
 
+      /* NEW: E-wallet Payment Options */
+      .ewallet-payment-options {
+        background: rgba(245, 245, 245, 0.8);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 30px;
+        display: none;
+      }
+
+      .ewallet-payment-options.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .ewallet-option {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .ewallet-option:hover {
+        background: rgba(250, 250, 250, 0.8);
+      }
+
+      .ewallet-option.active {
+        border-color: #000000;
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .ewallet-option-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #000000;
+        margin-right: 15px;
+      }
+
+      .ewallet-option-info {
+        flex: 1;
+      }
+
+      .ewallet-option-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .ewallet-option-desc {
+        font-size: 14px;
+        color: #666;
+      }
+
+      /* NEW: Bank Transfer Form */
+      .bank-transfer-form {
+        background: rgba(245, 245, 245, 0.8);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 30px;
+        display: none;
+      }
+
+      .bank-transfer-form.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .bank-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .bank-option {
+        padding: 15px;
+        background: white;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        text-align: center;
+      }
+
+      .bank-option:hover {
+        background: rgba(250, 250, 250, 0.8);
+      }
+
+      .bank-option.active {
+        border-color: #000000;
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .bank-option-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #000000;
+        margin: 0 auto 10px;
+      }
+
+      .bank-option-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+      }
+
       /* Contact Us Section */
       .contact-section {
         padding: 40px;
@@ -3181,6 +3303,11 @@
         .product-detail-actions {
           flex-direction: column;
         }
+        
+        /* Bank Options */
+        .bank-options {
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        }
       }
 
       @media (max-width: 480px) {
@@ -3279,6 +3406,11 @@
         
         .product-detail-image {
           height: 300px;
+        }
+        
+        /* Bank Options */
+        .bank-options {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -3707,38 +3839,62 @@
           { id: 'gaming', name: "Gaming PC's & Gear", icon: 'fa-gamepad', count: products.filter(p => p.category === 'gaming').length, color: '#e74c3c' }
         ];
 
-        // Payment Methods
+        // Updated Payment Methods with Philippine options
         const paymentMethods = [
           {
             id: 'cod',
             name: 'Cash on Delivery',
             icon: 'fa-money-bill-wave',
-            description: 'Pay when you receive the item'
+            description: 'Pay when you receive the item',
+            requiresDetails: false
           },
           {
             id: 'card',
             name: 'Credit/Debit Card',
             icon: 'fa-credit-card',
             description: 'Pay securely with your card',
-            requiresDetails: true
+            requiresDetails: true,
+            detailsType: 'card'
           },
           {
             id: 'gcash',
             name: 'GCash',
             icon: 'fa-mobile-alt',
-            description: 'Pay using GCash mobile wallet'
+            description: 'Pay using GCash mobile wallet',
+            requiresDetails: true,
+            detailsType: 'ewallet',
+            options: [
+              { id: 'gcash-direct', name: 'Pay without linking', description: 'Pay directly using GCash app' },
+              { id: 'gcash-link', name: 'Link account to pay', description: 'Link your GCash account for faster checkout' }
+            ]
           },
           {
-            id: 'paypal',
-            name: 'PayPal',
-            icon: 'fa-paypal',
-            description: 'Pay using your PayPal account'
+            id: 'paymaya',
+            name: 'PayMaya',
+            icon: 'fa-credit-card',
+            description: 'Pay using PayMaya mobile wallet',
+            requiresDetails: true,
+            detailsType: 'ewallet',
+            options: [
+              { id: 'paymaya-direct', name: 'Pay without linking', description: 'Pay directly using PayMaya app' },
+              { id: 'paymaya-link', name: 'Link account to pay', description: 'Link your PayMaya account for faster checkout' }
+            ]
           },
           {
             id: 'bank',
             name: 'Bank Transfer',
             icon: 'fa-university',
-            description: 'Transfer directly to our bank account'
+            description: 'Transfer directly to our bank account',
+            requiresDetails: true,
+            detailsType: 'bank',
+            banks: [
+              { id: 'bdo', name: 'BDO', icon: 'fa-university' },
+              { id: 'unionbank', name: 'UnionBank', icon: 'fa-university' },
+              { id: 'seabank', name: 'SeaBank', icon: 'fa-university' },
+              { id: 'bpj', name: 'BPI', icon: 'fa-university' },
+              { id: 'metrobank', name: 'Metrobank', icon: 'fa-university' },
+              { id: 'securitybank', name: 'Security Bank', icon: 'fa-university' }
+            ]
           }
         ];
 
@@ -3931,7 +4087,7 @@
           return phoneRegex.test(phone);
         }
 
-        // Render Main Application
+        // Render Main Application with updated payment methods
         function renderMainApp() {
           app.innerHTML = `
             <!-- Mobile Menu -->
@@ -4283,7 +4439,7 @@
               </div>
             </div>
             
-            <!-- Checkout Form Modal -->
+            <!-- Checkout Form Modal with updated payment methods -->
             <div class="checkout-modal" id="checkoutFormModal">
               <div class="checkout-header">
                 <i class="fas fa-shipping-fast checkout-icon"></i>
@@ -4352,7 +4508,7 @@
                   
                   <div id="paymentMethodsList">
                     ${paymentMethods.map(method => `
-                      <div class="payment-method" onclick="selectPaymentMethod('${method.id}', ${method.requiresDetails || false})">
+                      <div class="payment-method" onclick="selectPaymentMethod('${method.id}', '${method.detailsType || ''}')">
                         <div class="payment-method-icon">
                           <i class="fas ${method.icon}"></i>
                         </div>
@@ -4396,6 +4552,40 @@
                     <label class="form-label">Name on Card *</label>
                     <input type="text" class="modern-input" name="cardName" 
                            placeholder="As shown on card">
+                  </div>
+                </div>
+                
+                <!-- E-wallet Payment Options -->
+                <div class="ewallet-payment-options" id="ewalletPaymentOptions">
+                  <h4 class="shipping-form-title">
+                    <i class="fas fa-wallet"></i> E-wallet Payment Options
+                  </h4>
+                  
+                  <div id="ewalletOptionsList">
+                    <!-- E-wallet options will be dynamically added here -->
+                  </div>
+                </div>
+                
+                <!-- Bank Transfer Form -->
+                <div class="bank-transfer-form" id="bankTransferForm">
+                  <h4 class="shipping-form-title">
+                    <i class="fas fa-university"></i> Bank Transfer
+                  </h4>
+                  
+                  <div class="bank-options" id="bankOptions">
+                    <!-- Bank options will be dynamically added here -->
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Account Name *</label>
+                    <input type="text" class="modern-input" name="accountName" 
+                           placeholder="Name on bank account">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Account Number *</label>
+                    <input type="text" class="modern-input" name="accountNumber" 
+                           placeholder="Your bank account number">
                   </div>
                 </div>
                 
@@ -4560,7 +4750,7 @@
                 
                 <h4>Orders & Payment</h4>
                 <p><strong>Q: What payment methods do you accept?</strong><br>
-                A: We accept Cash on Delivery (COD), Credit/Debit Cards, GCash, PayPal, and Bank Transfer.</p>
+                A: We accept Cash on Delivery (COD), Credit/Debit Cards, GCash, PayMaya, and Bank Transfer.</p>
                 
                 <p><strong>Q: Can I cancel or modify my order?</strong><br>
                 A: You can cancel or modify your order within 1 hour of placing it by contacting our customer service at 0991-260-8220.</p>
@@ -5595,9 +5785,14 @@
             phoneInput.value = currentUser.phone;
           }
           
-          // Hide card details form initially
+          // Hide all payment detail forms initially
           const cardForm = document.getElementById('cardDetailsForm');
+          const ewalletForm = document.getElementById('ewalletPaymentOptions');
+          const bankForm = document.getElementById('bankTransferForm');
+          
           if (cardForm) cardForm.classList.remove('active');
+          if (ewalletForm) ewalletForm.classList.remove('active');
+          if (bankForm) bankForm.classList.remove('active');
           
           // Close cart and show checkout form
           closeCart();
@@ -5605,8 +5800,8 @@
           document.getElementById('backdrop').classList.add('active');
         };
 
-        // NEW: Select payment method with card details form
-        window.selectPaymentMethod = function(methodId, requiresDetails = false) {
+        // NEW: Select payment method with dynamic forms
+        window.selectPaymentMethod = function(methodId, detailsType = '') {
           const methods = document.querySelectorAll('.payment-method');
           methods.forEach(method => {
             method.classList.remove('active');
@@ -5617,15 +5812,81 @@
             }
           });
           
-          // Show/hide card details form
+          // Hide all payment detail forms
           const cardForm = document.getElementById('cardDetailsForm');
-          if (cardForm) {
-            if (requiresDetails) {
-              cardForm.classList.add('active');
-            } else {
-              cardForm.classList.remove('active');
+          const ewalletForm = document.getElementById('ewalletPaymentOptions');
+          const bankForm = document.getElementById('bankTransferForm');
+          
+          if (cardForm) cardForm.classList.remove('active');
+          if (ewalletForm) ewalletForm.classList.remove('active');
+          if (bankForm) bankForm.classList.remove('active');
+          
+          // Show appropriate form based on payment method
+          const selectedMethod = paymentMethods.find(m => m.id === methodId);
+          
+          if (detailsType === 'card') {
+            if (cardForm) cardForm.classList.add('active');
+          } else if (detailsType === 'ewallet') {
+            if (ewalletForm) {
+              ewalletForm.classList.add('active');
+              // Render e-wallet options
+              const ewalletOptionsList = document.getElementById('ewalletOptionsList');
+              if (ewalletOptionsList && selectedMethod.options) {
+                ewalletOptionsList.innerHTML = selectedMethod.options.map(option => `
+                  <div class="ewallet-option" onclick="selectEwalletOption('${option.id}')">
+                    <div class="ewallet-option-icon">
+                      <i class="fas ${selectedMethod.icon}"></i>
+                    </div>
+                    <div class="ewallet-option-info">
+                      <div class="ewallet-option-name">${option.name}</div>
+                      <div class="ewallet-option-desc">${option.description}</div>
+                    </div>
+                    <input type="radio" name="ewalletOption" value="${option.id}" style="display: none;">
+                  </div>
+                `).join('');
+              }
+            }
+          } else if (detailsType === 'bank') {
+            if (bankForm) {
+              bankForm.classList.add('active');
+              // Render bank options
+              const bankOptions = document.getElementById('bankOptions');
+              if (bankOptions && selectedMethod.banks) {
+                bankOptions.innerHTML = selectedMethod.banks.map(bank => `
+                  <div class="bank-option" onclick="selectBank('${bank.id}')">
+                    <div class="bank-option-icon">
+                      <i class="fas ${bank.icon}"></i>
+                    </div>
+                    <div class="bank-option-name">${bank.name}</div>
+                  </div>
+                `).join('');
+              }
             }
           }
+        };
+
+        // NEW: Select e-wallet option
+        window.selectEwalletOption = function(optionId) {
+          const options = document.querySelectorAll('.ewallet-option');
+          options.forEach(option => {
+            option.classList.remove('active');
+            const radio = option.querySelector('input[type="radio"]');
+            if (radio.value === optionId) {
+              option.classList.add('active');
+              radio.checked = true;
+            }
+          });
+        };
+
+        // NEW: Select bank
+        window.selectBank = function(bankId) {
+          const bankOptions = document.querySelectorAll('.bank-option');
+          bankOptions.forEach(option => {
+            option.classList.remove('active');
+            if (option.querySelector('.bank-option-name').textContent.includes(bankId)) {
+              option.classList.add('active');
+            }
+          });
         };
 
         window.closeCheckoutForm = function() {
@@ -5674,6 +5935,22 @@
           return null;
         }
 
+        // NEW: Validate bank transfer details
+        function validateBankTransfer(formData) {
+          const accountName = formData.get('accountName') || '';
+          const accountNumber = formData.get('accountNumber') || '';
+          
+          if (!accountName.trim()) {
+            return 'Please enter the account name';
+          }
+          
+          if (!/^\d{10,12}$/.test(accountNumber.replace(/\s/g, ''))) {
+            return 'Please enter a valid 10-12 digit account number';
+          }
+          
+          return null;
+        }
+
         window.processCheckout = function(event) {
           event.preventDefault();
           const form = event.target;
@@ -5689,13 +5966,19 @@
           // Get payment method
           const paymentMethod = formData.get('paymentMethod');
           
-          // If card payment, validate card details
+          // Validate payment method details
+          let paymentError = null;
+          
           if (paymentMethod === 'card') {
-            const cardError = validateCardDetails(formData);
-            if (cardError) {
-              showToast(cardError, 'error');
-              return;
-            }
+            paymentError = validateCardDetails(formData);
+          } else if (paymentMethod === 'bank') {
+            paymentError = validateBankTransfer(formData);
+          }
+          // Note: E-wallets don't require additional validation in this demo
+          
+          if (paymentError) {
+            showToast(paymentError, 'error');
+            return;
           }
           
           const shippingInfo = {
@@ -5710,7 +5993,8 @@
           
           // Validate form
           for (let [key, value] of formData.entries()) {
-            if (!value.trim() && key !== 'paymentMethod' && !key.startsWith('card')) {
+            if (!value.trim() && key !== 'paymentMethod' && !key.startsWith('card') && 
+                !key.startsWith('ewallet') && !key.startsWith('account')) {
               showToast(`Please fill in ${key}`, 'error');
               return;
             }
