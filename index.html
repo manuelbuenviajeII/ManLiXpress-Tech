@@ -2765,6 +2765,7 @@
         height: 100%;
         object-fit: contain;
         padding: 20px;
+        transition: all 0.5s ease;
       }
 
       .product-detail-info {
@@ -2845,6 +2846,7 @@
         cursor: pointer;
         transition: all 0.3s ease;
         border: 3px solid transparent;
+        position: relative;
       }
 
       .color-option:hover {
@@ -2854,6 +2856,53 @@
       .color-option.active {
         border-color: #fff;
         box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+      }
+
+      .color-name-tooltip {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+
+      .color-option:hover .color-name-tooltip {
+        opacity: 1;
+        visibility: visible;
+        bottom: calc(100% + 5px);
+      }
+
+      .selected-color-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        padding: 10px;
+        background: rgba(40, 40, 40, 0.6);
+        border-radius: 8px;
+        border-left: 3px solid #ff6b00;
+      }
+
+      .selected-color-preview {
+        width: 30px;
+        height: 30px;
+        border-radius: 6px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .selected-color-name {
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
       }
 
       .product-detail-actions {
@@ -3026,6 +3075,13 @@
       @keyframes slideUp {
         from { transform: translateY(0); opacity: 1; }
         to { transform: translateY(-100%); opacity: 0; }
+      }
+
+      /* NEW: Animation for color selection */
+      @keyframes colorChange {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
       }
 
       /* Responsive Design */
@@ -3506,6 +3562,10 @@
         .service-btn::before {
           display: none;
         }
+        
+        .color-option:hover .color-name-tooltip {
+          display: none;
+        }
       }
     </style>
   </head>
@@ -3570,6 +3630,7 @@
         ];
 
         // Product Data with Images and Color Options - CONVERTED TO PHILIPPINE PESO
+        // UPDATED: Added color-specific images for demonstration
         const products = [
           {
             id: 1,
@@ -3579,6 +3640,12 @@
             category: "phone",
             tags: ["New", "Flagship"],
             image: "https://images.unsplash.com/photo-1605787020600-b9ebd5df1d07?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Space Black": "https://preview.redd.it/a-black-iphone-17-pro-wouldve-been-the-coolest-thing-ever-v0-3qrfu7ebqzwf1.jpeg?auto=webp&s=62025c5377d55e98d82a41a4dade4733beea32c8",
+              "Silver": "https://photos5.appleinsider.com/gallery/66001-138433-iPhone-17-Pro-on-Wood-Table-xl.jpg",
+              "Gold": "https://craftbymerlin.com/cdn/shop/files/img-1_f4181ee7-c8cf-4176-a4ed-05a4aa5b121f.png?v=1757769617",
+              "Deep Purple": "https://i.ytimg.com/vi/Unl2qSs4hqs/maxresdefault.jpg"
+            },
             colors: [
               { name: "Space Black", value: "#2C2C2C" },
               { name: "Silver", value: "#F0F0F0" },
@@ -3603,6 +3670,10 @@
             category: "laptop",
             tags: ["Professional", "Powerful"],
             image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Space Gray": "https://i0.wp.com/thedisconnekt.com/wp-content/uploads/2024/11/Apple-MacBook-Pro-M4-7.jpg?resize=1600%2C1067&ssl=1",
+              "Silver": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqyCRGbN9dhARgo_aNE33OA6xal8Yj7CHfVg&s"
+            },
             colors: [
               { name: "Space Gray", value: "#4C4C4C" },
               { name: "Silver", value: "#E8E8E8" }
@@ -3624,6 +3695,11 @@
             category: "phone",
             tags: ["Gaming", "High Refresh"],
             image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Cyber Neon": "https://global.redmagic.gg/cdn/shop/files/left-_silver_2.png?v=1733229005&width=1352",
+              "Obsidian Black": "https://www.vopmart.com/media/wysiwyg/Nubia/red-magic-10-pro-plus-review-03.jpg",
+              "Aurora Silver": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0IfHcAJlVfkS8KUadbbMkWAb1IleafXDXHg&s"
+            },
             colors: [
               { name: "Cyber Neon", value: "#00FF00" },
               { name: "Obsidian Black", value: "#000000" },
@@ -3647,6 +3723,11 @@
             category: "accessories",
             tags: ["Gaming", "Mechanical"],
             image: "https://images.unsplash.com/photo-1601445638532-3c6f6c3aa1d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Black": "https://assets2.razerzone.com/images/pnx.assets/633cf4bb9ab04ad74a519053ec300085/razer-huntsman-v3-pro-hero-desktop-v3.webp",
+              "Mercury White": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJCAu4sRpKarxSMDSbp3vFE1Q2ufxCBB8B3w&s",
+              "Quartz Pink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ03MUvamZVZtQMvFJOFzQLL0xCCIafvYUCUA&s"
+            },
             colors: [
               { name: "Black", value: "#000000" },
               { name: "Mercury White", value: "#FFFFFF" },
@@ -3669,6 +3750,12 @@
             category: "phone",
             tags: ["Foldable", "Premium"],
             image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Phantom Black": "https://images.samsung.com/is/image/samsung/assets/sg/smartphones/galaxy-z-fold6/buy/Color_Selection_CraftedBlack_MO.png?imbypass=true",
+              "Cream": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkHllo39Bn3UHiPvSNu-kubKMxagtynGI1uw&s",
+              "Lavender": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzOdh4LCupby5pq-Q3o97sw_pPeLFQFbF4iQ&s",
+              "Green": "https://m.media-amazon.com/images/I/51nC7mLYosL.jpg"
+            },
             colors: [
               { name: "Phantom Black", value: "#000000" },
               { name: "Cream", value: "#FFFDD0" },
@@ -3693,6 +3780,10 @@
             category: "laptop",
             tags: ["Gaming", "RTX 4090"],
             image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Eclipse Gray": "https://dlcdnwebimgs.asus.com/gain/C7FA58DE-2368-4B53-90E4-6ED31C3F3C67/w1000/h732",
+              "Moonlight White": "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=grayscale&blur=5https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7_StsOPgHqvoQd3Hi97zHv5NiXdVQsujdOw&s"
+            },
             colors: [
               { name: "Eclipse Gray", value: "#404040" },
               { name: "Moonlight White", value: "#F5F5F5" }
@@ -3715,6 +3806,10 @@
             category: "gaming",
             tags: ["AR/VR", "Apple"],
             image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Titanium": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTffskV6TnY6NKoSls2x9JgX19Nk3tEODGrpw&s",
+              "Space Black": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqNGPqDBvbRNVtZB2_4B6BJcEDvlddO5AWmQ&s"
+            },
             colors: [
               { name: "Titanium", value: "#878681" },
               { name: "Space Black", value: "#333333" }
@@ -3737,6 +3832,11 @@
             category: "accessories",
             tags: ["Wireless", "Ergonomic"],
             image: "https://images.unsplash.com/photo-1527814050087-3793815479db?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            colorImages: {
+              "Graphite": "https://media.currys.biz/i/currysprod/M10290278_graphite?$l-large$&fmt=auto",
+              "Pale Gray": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTryoTR8PG1kKZ-7G4e1l_UuegkLUxE3OwYAQ&s",
+              "Midnight Blue": "https://www.canbuyornot.com/wp-content/uploads/2025/11/Logitech_MX_Master_4-1-1284x856.jpg"
+            },
             colors: [
               { name: "Graphite", value: "#464646" },
               { name: "Pale Gray", value: "#D3D3D3" },
@@ -3845,10 +3945,10 @@
         // Categories Data
         const categories = [
           { id: 'all', name: 'All Products', icon: 'fa-box', count: products.length, color: '#4361ee' },
-          { id: 'phone', name: 'Smartphones', icon: 'fa-mobile-alt', count: products.filter(p => p.category === 'phone').length, color: '#ff4d8d' },
-          { id: 'laptop', name: 'Laptops', icon: 'fa-laptop', count: products.filter(p => p.category === 'laptop').length, color: '#00b894' },
-          { id: 'accessories', name: 'Accessories', icon: 'fa-keyboard', count: products.filter(p => p.category === 'accessories').length, color: '#fdcb6e' },
-          { id: 'gaming', name: "Gaming PC's & Gear", icon: 'fa-gamepad', count: products.filter(p => p.category === 'gaming').length, color: '#e74c3c' }
+          { id: 'phone', name: 'Smartphones', icon: 'fa-mobile-alt', count: products.filter(function(p) { return p.category === 'phone'; }).length, color: '#ff4d8d' },
+          { id: 'laptop', name: 'Laptops', icon: 'fa-laptop', count: products.filter(function(p) { return p.category === 'laptop'; }).length, color: '#00b894' },
+          { id: 'accessories', name: 'Accessories', icon: 'fa-keyboard', count: products.filter(function(p) { return p.category === 'accessories'; }).length, color: '#fdcb6e' },
+          { id: 'gaming', name: "Gaming PC's & Gear", icon: 'fa-gamepad', count: products.filter(function(p) { return p.category === 'gaming'; }).length, color: '#e74c3c' }
         ];
 
         // Updated Payment Methods with Philippine options
@@ -3974,7 +4074,7 @@
           deliverableNotificationShown = true;
           
           // Auto remove after 8 seconds
-          deliverableNotificationTimeout = setTimeout(() => {
+          deliverableNotificationTimeout = setTimeout(function() {
             removeNotification(notification);
           }, 8000);
         }
@@ -3985,13 +4085,96 @@
           if (notification && notification.parentElement) {
             notification.classList.remove('active');
             notification.style.animation = 'slideUp 0.3s ease forwards';
-            setTimeout(() => {
+            setTimeout(function() {
               if (notification.parentElement) {
                 notification.remove();
               }
             }, 300);
           }
         };
+
+        // NEW: Color selection functionality
+        window.selectColor = function(productId, colorIndex, colorName, colorValue, event) {
+          // Prevent event bubbling
+          if (event) {
+            event.stopPropagation();
+          }
+          
+          // Remove active class from all color options
+          const colorOptions = document.querySelectorAll('.color-option');
+          colorOptions.forEach(function(option) {
+            option.classList.remove('active');
+          });
+          
+          // Add active class to selected color
+          const selectedOption = event ? event.currentTarget : document.querySelector(`.color-option[data-color-index="${colorIndex}"]`);
+          if (selectedOption) {
+            selectedOption.classList.add('active');
+            selectedOption.style.animation = 'colorChange 0.3s ease';
+            setTimeout(function() {
+              selectedOption.style.animation = '';
+            }, 300);
+          }
+          
+          // Find the product
+          const product = products.find(function(p) { return p.id === productId; });
+          if (!product) return;
+          
+          // Update product image if color-specific image exists
+          const productImage = document.querySelector('.product-detail-image img');
+          if (productImage && product.colorImages && product.colorImages[colorName]) {
+            // Add fade out effect
+            productImage.style.opacity = '0.5';
+            productImage.style.transition = 'opacity 0.3s ease';
+            
+            setTimeout(function() {
+              // Change image source
+              productImage.src = product.colorImages[colorName];
+              productImage.alt = `${product.name} - ${colorName}`;
+              
+              // Add fade in effect
+              setTimeout(function() {
+                productImage.style.opacity = '1';
+              }, 50);
+            }, 300);
+          }
+          
+          // Update selected color info display
+          updateSelectedColorInfo(colorName, colorValue);
+          
+          // Show notification
+          showToast(`Selected color: ${colorName}`, 'info');
+        };
+
+        // NEW: Update selected color info display
+        function updateSelectedColorInfo(colorName, colorValue) {
+          let colorInfo = document.querySelector('.selected-color-info');
+          
+          if (!colorInfo) {
+            // Create color info display if it doesn't exist
+            const colorOptionsContainer = document.querySelector('.color-options');
+            if (colorOptionsContainer) {
+              colorOptionsContainer.insertAdjacentHTML('beforeend', `
+                <div class="selected-color-info">
+                  <div class="selected-color-preview" style="background-color: ${colorValue}"></div>
+                  <div class="selected-color-name">Selected: ${colorName}</div>
+                </div>
+              `);
+              colorInfo = document.querySelector('.selected-color-info');
+            }
+          } else {
+            // Update existing color info
+            const colorPreview = colorInfo.querySelector('.selected-color-preview');
+            const colorNameDisplay = colorInfo.querySelector('.selected-color-name');
+            
+            if (colorPreview) {
+              colorPreview.style.backgroundColor = colorValue;
+            }
+            if (colorNameDisplay) {
+              colorNameDisplay.textContent = `Selected: ${colorName}`;
+            }
+          }
+        }
 
         // Render Authentication Page - UPDATED WITH PHONE NUMBER AND PASSWORD VALIDATION
         function renderAuthPage() {
@@ -4169,7 +4352,7 @@
               <div class="nav-right">
                 <div class="cart-icon" onclick="openCart()">
                   <i class="fas fa-shopping-cart"></i>
-                  <div class="cart-count" id="cartCount">${cart.reduce((sum, item) => sum + item.quantity, 0)}</div>
+                  <div class="cart-count" id="cartCount">${cart.reduce(function(sum, item) { return sum + item.quantity; }, 0)}</div>
                 </div>
                 
                 <div class="user-menu">
@@ -4520,7 +4703,7 @@
                   </h4>
                   
                   <div id="paymentMethodsList">
-                    ${paymentMethods.map(method => `
+                    ${paymentMethods.map(function(method) { return `
                       <div class="payment-method" onclick="selectPaymentMethod('${method.id}', '${method.detailsType || ''}')">
                         <div class="payment-method-icon">
                           <i class="fas ${method.icon}"></i>
@@ -4532,7 +4715,7 @@
                         <input type="radio" name="paymentMethod" value="${method.id}" 
                                style="display: none;" ${method.id === 'cod' ? 'checked' : ''}>
                       </div>
-                    `).join('')}
+                    `; }).join('')}
                   </div>
                 </div>
                 
@@ -4867,7 +5050,7 @@
           renderProductSlider();
           
           // Initialize Slick Carousel
-          setTimeout(() => {
+          setTimeout(function() {
             if ($('.product-slider').length) {
               $('.product-slider').slick({
                 dots: true,
@@ -4910,13 +5093,13 @@
           const grid = document.getElementById('categoriesGrid');
           if (!grid) return;
           
-          grid.innerHTML = categories.map(category => `
+          grid.innerHTML = categories.map(function(category) { return `
             <div class="category-card" onclick="filterProducts('${category.id}')">
               <i class="fas ${category.icon} category-icon"></i>
               <h3 class="category-title">${category.name}</h3>
               <p class="category-count">${category.count} products</p>
             </div>
-          `).join('');
+          `; }).join('');
         }
 
         // Render Product Slider - UPDATED WITH PESO CURRENCY
@@ -4927,7 +5110,7 @@
           // Get featured products (first 6 products for slider)
           const featuredProducts = products.slice(0, 6);
           
-          slider.innerHTML = featuredProducts.map(product => `
+          slider.innerHTML = featuredProducts.map(function(product) { return `
             <div class="slider-item">
               <div class="slider-product-card" onclick="viewProductDetail(${product.id})" style="cursor: pointer;">
                 <div class="slider-product-image">
@@ -4950,7 +5133,7 @@
                 </div>
               </div>
             </div>
-          `).join('');
+          `; }).join('');
         }
 
         // Render Category Filters
@@ -4958,11 +5141,11 @@
           const filters = document.getElementById('categoryFilters');
           if (!filters) return;
           
-          filters.innerHTML = categories.map(category => `
+          filters.innerHTML = categories.map(function(category) { return `
             <button class="filter-btn ${category.id} ${currentCategory === category.id ? 'active' : ''}" onclick="setActiveCategory('${category.id}')">
               <i class="fas ${category.icon}"></i> ${category.name}
             </button>
-          `).join('');
+          `; }).join('');
         }
 
         // Set Active Category
@@ -4979,7 +5162,7 @@
           
           const filteredProducts = category === 'all' 
             ? products 
-            : products.filter(p => p.category === category);
+            : products.filter(function(p) { return p.category === category; });
           
           if (filteredProducts.length === 0) {
             grid.innerHTML = `
@@ -4992,9 +5175,9 @@
             return;
           }
           
-          grid.innerHTML = filteredProducts.map(product => {
-            const categoryClass = categories.find(c => c.id === product.category)?.id || 'all';
-            const categoryName = categories.find(c => c.id === product.category)?.name || 'All Products';
+          grid.innerHTML = filteredProducts.map(function(product) {
+            const categoryClass = categories.find(function(c) { return c.id === product.category; })?.id || 'all';
+            const categoryName = categories.find(function(c) { return c.id === product.category; })?.name || 'All Products';
             
             return `
             <div class="product-card" onclick="viewProductDetail(${product.id})">
@@ -5024,9 +5207,9 @@
           }).join('');
         }
 
-        // Render Product Detail Page
+        // Render Product Detail Page with color selection functionality
         function renderProductDetail(productId) {
-          const product = products.find(p => p.id === productId);
+          const product = products.find(function(p) { return p.id === productId; });
           if (!product) return;
           
           viewingProductDetail = productId;
@@ -5038,7 +5221,7 @@
             </button>
             <div class="product-detail-container">
               <div class="product-detail-image">
-                <img src="${product.image}" alt="${product.name}">
+                <img src="${product.image}" alt="${product.name}" id="productDetailImage">
               </div>
               <div class="product-detail-info">
                 <h1 class="product-detail-title">${product.name}</h1>
@@ -5048,22 +5231,24 @@
                 <div class="color-options">
                   <h3 class="color-options-title">Available Colors</h3>
                   <div class="color-options-grid">
-                    ${product.colors.map((color, index) => `
+                    ${product.colors.map(function(color, index) { return `
                       <div class="color-option ${index === 0 ? 'active' : ''}" 
                            style="background-color: ${color.value};"
-                           title="${color.name}">
+                           data-color-index="${index}"
+                           onclick="selectColor(${product.id}, ${index}, '${color.name}', '${color.value}', event)">
+                        <div class="color-name-tooltip">${color.name}</div>
                       </div>
-                    `).join('')}
+                    `; }).join('')}
                   </div>
                 </div>
                 
                 <div class="specs-grid">
-                  ${Object.entries(product.specs || {}).map(([key, value]) => `
+                  ${Object.entries(product.specs || {}).map(function([key, value]) { return `
                     <div class="spec-item">
                       <div class="spec-label">${key}</div>
                       <div class="spec-value">${value}</div>
                     </div>
-                  `).join('')}
+                  `; }).join('')}
                 </div>
                 
                 <div class="product-detail-actions">
@@ -5078,8 +5263,13 @@
             </div>
           `;
           
+          // Initialize selected color info with the first color
+          if (product.colors.length > 0) {
+            updateSelectedColorInfo(product.colors[0].name, product.colors[0].value);
+          }
+          
           // Show the product detail section
-          document.querySelectorAll('.main-container > section').forEach(sec => {
+          document.querySelectorAll('.main-container > section').forEach(function(sec) {
             sec.classList.remove('active');
           });
           section.classList.add('active');
@@ -5093,14 +5283,14 @@
         // Back to Products
         window.backToProducts = function() {
           viewingProductDetail = null;
-          document.querySelectorAll('.main-container > section').forEach(sec => {
+          document.querySelectorAll('.main-container > section').forEach(function(sec) {
             sec.classList.remove('active');
           });
           document.getElementById('productsSection').classList.add('active');
           currentSection = 'products';
           
           // Update navigation active state
-          document.querySelectorAll('.nav-link').forEach(link => {
+          document.querySelectorAll('.nav-link').forEach(function(link) {
             link.classList.remove('active');
             if (link.textContent.includes('Products')) {
               link.classList.add('active');
@@ -5113,13 +5303,13 @@
           const grid = document.getElementById('servicesGrid');
           if (!grid) return;
           
-          grid.innerHTML = services.map(service => `
+          grid.innerHTML = services.map(function(service) { return `
             <div class="service-card" onclick="inquireService('${service.id}')">
               <i class="fas ${service.icon} service-icon"></i>
               <h3 class="service-title">${service.title}</h3>
               <p class="service-description">${service.description}</p>
               <ul class="service-features">
-                ${service.features.map(feature => `<li>${feature}</li>`).join('')}
+                ${service.features.map(function(feature) { return `<li>${feature}</li>`; }).join('')}
               </ul>
               <div class="service-details">
                 <div class="service-price">${service.price}</div>
@@ -5129,7 +5319,7 @@
                 <i class="fas fa-envelope"></i> Inquire Now
               </button>
             </div>
-          `).join('');
+          `; }).join('');
         }
 
         // Render Orders with real-time status - UPDATED WITH PESO CURRENCY
@@ -5149,10 +5339,10 @@
           }
           
           // Sort orders by date (newest first)
-          const sortedOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+          const sortedOrders = [...orders].sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
           
           // Simulate real-time status updates
-          sortedOrders.forEach(order => {
+          sortedOrders.forEach(function(order) {
             if (order.status !== 'delivered' && Math.random() > 0.7) {
               // Randomly update status for demonstration
               const statuses = ['pending', 'processing', 'in-transit', 'at-customs', 'arrived', 'out-for-delivery', 'delivered'];
@@ -5166,7 +5356,7 @@
           // Save updated orders
           localStorage.setItem('ManLiExpress5173_orders', JSON.stringify(orders));
           
-          grid.innerHTML = sortedOrders.map(order => {
+          grid.innerHTML = sortedOrders.map(function(order) {
             // Calculate order age
             const orderDate = new Date(order.date);
             const now = new Date();
@@ -5221,12 +5411,12 @@
               </div>
               
               <div class="order-items">
-                ${order.items.map(item => `
+                ${order.items.map(function(item) { return `
                   <div class="order-item">
                     <span class="order-item-name">${item.name} × ${item.quantity}</span>
                     <span class="order-item-price">₱${(item.price * item.quantity).toLocaleString()}</span>
                   </div>
-                `).join('')}
+                `; }).join('')}
               </div>
               
               <div class="order-total" style="margin-top: 10px;">
@@ -5262,7 +5452,7 @@
           
           // Get recent orders (last 3 days)
           const now = new Date();
-          const recentOrders = orders.filter(order => {
+          const recentOrders = orders.filter(function(order) {
             const orderDate = new Date(order.date);
             const daysDiff = Math.floor((now - orderDate) / (1000 * 60 * 60 * 24));
             return daysDiff <= 3;
@@ -5281,10 +5471,10 @@
           
           // Sort by date (newest first) and limit to 4 items
           const sortedRecentOrders = [...recentOrders]
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .sort(function(a, b) { return new Date(b.date) - new Date(a.date); })
             .slice(0, 4);
           
-          grid.innerHTML = sortedRecentOrders.map(order => {
+          grid.innerHTML = sortedRecentOrders.map(function(order) {
             const orderDate = new Date(order.date);
             const statusColors = {
               'pending': '#ff6b00',
@@ -5339,7 +5529,7 @@
           
           let cartTotal = 0;
           
-          content.innerHTML = cart.map(item => {
+          content.innerHTML = cart.map(function(item) {
             const itemTotal = item.price * item.quantity;
             cartTotal += itemTotal;
             
@@ -5407,14 +5597,16 @@
           ];
           
           return {
-            steps: trackingSteps.map((step, index) => ({
-              ...step,
-              completed: index < statusIndex,
-              active: index === statusIndex,
-              time: index === 0 ? new Date(order.date).toLocaleString() : 
-                    index === 6 ? deliveryDate.toLocaleString() :
-                    new Date(now.getTime() - (6 - index) * 86400000).toLocaleString()
-            })),
+            steps: trackingSteps.map(function(step, index) {
+              return {
+                ...step,
+                completed: index < statusIndex,
+                active: index === statusIndex,
+                time: index === 0 ? new Date(order.date).toLocaleString() : 
+                      index === 6 ? deliveryDate.toLocaleString() :
+                      new Date(now.getTime() - (6 - index) * 86400000).toLocaleString()
+              };
+            }),
             estimatedDelivery: deliveryDate.toLocaleDateString(),
             currentLocation: transitLocations[Math.min(statusIndex, transitLocations.length - 1)],
             carrier: ['DHL', 'FedEx', 'UPS', 'Local Courier'][Math.floor(Math.random() * 4)],
@@ -5438,8 +5630,8 @@
           const tabs = document.querySelectorAll('.auth-tab');
           const forms = document.querySelectorAll('.auth-form');
           
-          tabs.forEach(t => t.classList.remove('active'));
-          forms.forEach(f => f.classList.remove('active'));
+          tabs.forEach(function(t) { t.classList.remove('active'); });
+          forms.forEach(function(f) { f.classList.remove('active'); });
           
           document.querySelector(`.auth-tab:nth-child(${tab === 'login' ? 1 : 2})`).classList.add('active');
           document.getElementById(`${tab}Form`).classList.add('active');
@@ -5457,7 +5649,7 @@
           }
           
           // Check if user exists
-          const user = users.find(u => u.email === email && u.password === password);
+          const user = users.find(function(u) { return u.email === email && u.password === password; });
           
           if (!user) {
             showToast('Invalid email or password. Please register first.', 'error');
@@ -5473,7 +5665,7 @@
           
           localStorage.setItem('ManLiExpress5173_user', JSON.stringify(currentUser));
           showToast('Login successful!', 'success');
-          setTimeout(() => {
+          setTimeout(function() {
             initApp();
           }, 1000);
         };
@@ -5507,7 +5699,7 @@
           }
           
           // Check if user already exists
-          const existingUser = users.find(u => u.email === email);
+          const existingUser = users.find(function(u) { return u.email === email; });
           if (existingUser) {
             showToast('Email already registered. Please login instead.', 'error');
             return;
@@ -5533,7 +5725,7 @@
           
           localStorage.setItem('ManLiExpress5173_user', JSON.stringify(currentUser));
           showToast('Registration successful!', 'success');
-          setTimeout(() => {
+          setTimeout(function() {
             initApp();
           }, 1000);
         };
@@ -5542,7 +5734,7 @@
           currentUser = null;
           localStorage.removeItem('ManLiExpress5173_user');
           showToast('Logged out successfully', 'info');
-          setTimeout(() => {
+          setTimeout(function() {
             initApp();
           }, 1000);
         };
@@ -5551,7 +5743,7 @@
           currentSection = section;
           
           // Update navigation active state
-          document.querySelectorAll('.nav-link').forEach(link => {
+          document.querySelectorAll('.nav-link').forEach(function(link) {
             link.classList.remove('active');
             if (link.textContent.includes(section.charAt(0).toUpperCase() + section.slice(1))) {
               link.classList.add('active');
@@ -5559,7 +5751,7 @@
           });
           
           // Hide all sections
-          document.querySelectorAll('.main-container > section').forEach(sec => {
+          document.querySelectorAll('.main-container > section').forEach(function(sec) {
             sec.classList.remove('active');
           });
           
@@ -5571,14 +5763,14 @@
           
           // If switching to home section, render categories
           if (section === 'home') {
-            setTimeout(() => {
+            setTimeout(function() {
               renderHomeCategories();
               renderProductSlider();
               // Reinitialize slider
               if ($('.product-slider').hasClass('slick-initialized')) {
                 $('.product-slider').slick('unslick');
               }
-              setTimeout(() => {
+              setTimeout(function() {
                 $('.product-slider').slick({
                   dots: true,
                   infinite: true,
@@ -5617,12 +5809,12 @@
           
           // If switching to services section, render services
           if (section === 'services') {
-            setTimeout(() => renderServices(), 100);
+            setTimeout(function() { renderServices(); }, 100);
           }
           
           // If switching to orders section, refresh the orders list
           if (section === 'orders') {
-            setTimeout(() => {
+            setTimeout(function() {
               renderOrders();
               renderRecentlyPlaced();
             }, 100);
@@ -5630,7 +5822,7 @@
           
           // If switching to products section, render category filters
           if (section === 'products') {
-            setTimeout(() => {
+            setTimeout(function() {
               renderCategoryFilters();
               renderProducts(currentCategory);
             }, 100);
@@ -5639,14 +5831,14 @@
 
         window.filterProducts = function(category) {
           switchSection('products');
-          setTimeout(() => {
+          setTimeout(function() {
             setActiveCategory(category);
           }, 100);
         };
 
         // Add to cart with flying animation
         window.addToCartWithAnimation = function(productId) {
-          const product = products.find(p => p.id === productId);
+          const product = products.find(function(p) { return p.id === productId; });
           
           // Get button position
           const button = event.target.closest('.product-btn');
@@ -5676,12 +5868,12 @@
           flyingItem.style.setProperty('--ty', `${endY - startY}px`);
           
           // Start animation
-          setTimeout(() => {
+          setTimeout(function() {
             flyingItem.style.animation = 'flyToCart 0.8s cubic-bezier(0.2, 0.8, 0.8, 0.2) forwards';
           }, 10);
           
           // Remove element after animation
-          setTimeout(() => {
+          setTimeout(function() {
             if (flyingItem.parentElement) {
               flyingItem.remove();
             }
@@ -5692,8 +5884,8 @@
         };
 
         window.addToCart = function(productId) {
-          const product = products.find(p => p.id === productId);
-          const existingItem = cart.find(item => item.id === productId);
+          const product = products.find(function(p) { return p.id === productId; });
+          const existingItem = cart.find(function(item) { return item.id === productId; });
           
           if (existingItem) {
             existingItem.quantity += 1;
@@ -5711,7 +5903,7 @@
 
         window.buyNow = function(productId) {
           addToCartWithAnimation(productId);
-          setTimeout(() => openCart(), 1000);
+          setTimeout(function() { openCart(); }, 1000);
         };
 
         window.updateQuantity = function(productId, newQuantity) {
@@ -5720,7 +5912,7 @@
             return;
           }
           
-          const item = cart.find(item => item.id === productId);
+          const item = cart.find(function(item) { return item.id === productId; });
           if (item) {
             item.quantity = newQuantity;
             saveCart();
@@ -5730,7 +5922,7 @@
         };
 
         window.removeFromCart = function(productId) {
-          cart = cart.filter(item => item.id !== productId);
+          cart = cart.filter(function(item) { return item.id !== productId; });
           saveCart();
           updateCartCount();
           renderCart();
@@ -5769,7 +5961,7 @@
           
           // Render checkout summary - UPDATED WITH PESO CURRENCY
           const summary = document.getElementById('checkoutSummary');
-          const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+          const total = cart.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0);
           const shipping = 100; // Fixed shipping fee in pesos
           const grandTotal = total + shipping;
           
@@ -5784,7 +5976,7 @@
             </div>
             <div class="order-detail">
               <span class="order-detail-label">Total Items:</span>
-              <span class="order-detail-value">${cart.reduce((sum, item) => sum + item.quantity, 0)} item(s)</span>
+              <span class="order-detail-value">${cart.reduce(function(sum, item) { return sum + item.quantity; }, 0)} item(s)</span>
             </div>
             <div class="order-detail" style="border-top: 2px solid rgba(0,0,0,0.1); padding-top: 15px; margin-top: 10px;">
               <span class="order-detail-label" style="font-size: 18px;">Grand Total:</span>
@@ -5816,7 +6008,7 @@
         // NEW: Select payment method with dynamic forms
         window.selectPaymentMethod = function(methodId, detailsType = '') {
           const methods = document.querySelectorAll('.payment-method');
-          methods.forEach(method => {
+          methods.forEach(function(method) {
             method.classList.remove('active');
             const radio = method.querySelector('input[type="radio"]');
             if (radio.value === methodId) {
@@ -5835,7 +6027,7 @@
           if (bankForm) bankForm.classList.remove('active');
           
           // Show appropriate form based on payment method
-          const selectedMethod = paymentMethods.find(m => m.id === methodId);
+          const selectedMethod = paymentMethods.find(function(m) { return m.id === methodId; });
           
           if (detailsType === 'card') {
             if (cardForm) cardForm.classList.add('active');
@@ -5845,7 +6037,7 @@
               // Render e-wallet options
               const ewalletOptionsList = document.getElementById('ewalletOptionsList');
               if (ewalletOptionsList && selectedMethod.options) {
-                ewalletOptionsList.innerHTML = selectedMethod.options.map(option => `
+                ewalletOptionsList.innerHTML = selectedMethod.options.map(function(option) { return `
                   <div class="ewallet-option" onclick="selectEwalletOption('${option.id}')">
                     <div class="ewallet-option-icon">
                       <i class="fas ${selectedMethod.icon}"></i>
@@ -5856,7 +6048,7 @@
                     </div>
                     <input type="radio" name="ewalletOption" value="${option.id}" style="display: none;">
                   </div>
-                `).join('');
+                `; }).join('');
               }
             }
           } else if (detailsType === 'bank') {
@@ -5865,14 +6057,14 @@
               // Render bank options
               const bankOptions = document.getElementById('bankOptions');
               if (bankOptions && selectedMethod.banks) {
-                bankOptions.innerHTML = selectedMethod.banks.map(bank => `
+                bankOptions.innerHTML = selectedMethod.banks.map(function(bank) { return `
                   <div class="bank-option" onclick="selectBank('${bank.id}')">
                     <div class="bank-option-icon">
                       <i class="fas ${bank.icon}"></i>
                     </div>
                     <div class="bank-option-name">${bank.name}</div>
                   </div>
-                `).join('');
+                `; }).join('');
               }
             }
           }
@@ -5881,7 +6073,7 @@
         // NEW: Select e-wallet option
         window.selectEwalletOption = function(optionId) {
           const options = document.querySelectorAll('.ewallet-option');
-          options.forEach(option => {
+          options.forEach(function(option) {
             option.classList.remove('active');
             const radio = option.querySelector('input[type="radio"]');
             if (radio.value === optionId) {
@@ -5894,7 +6086,7 @@
         // NEW: Select bank
         window.selectBank = function(bankId) {
           const bankOptions = document.querySelectorAll('.bank-option');
-          bankOptions.forEach(option => {
+          bankOptions.forEach(function(option) {
             option.classList.remove('active');
             if (option.querySelector('.bank-option-name').textContent.includes(bankId)) {
               option.classList.add('active');
@@ -6013,7 +6205,7 @@
             }
           }
           
-          const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+          const total = cart.reduce(function(sum, item) { return sum + (item.price * item.quantity); }, 0);
           const shipping = 100; // Fixed shipping fee in pesos
           const grandTotal = total + shipping;
           const orderId = 'ORD' + Date.now().toString().slice(-8);
@@ -6049,7 +6241,7 @@
             </div>
             <div class="order-detail">
               <span class="order-detail-label">Payment Method:</span>
-              <span class="order-detail-value">${paymentMethods.find(p => p.id === paymentMethod).name}</span>
+              <span class="order-detail-value">${paymentMethods.find(function(p) { return p.id === paymentMethod; }).name}</span>
             </div>
             <div class="order-detail">
               <span class="order-detail-label">Total Amount:</span>
@@ -6136,9 +6328,9 @@
         };
 
         window.copyTrackingNumber = function(trackingNumber) {
-          navigator.clipboard.writeText(trackingNumber).then(() => {
+          navigator.clipboard.writeText(trackingNumber).then(function() {
             showToast('Tracking number copied to clipboard!', 'success');
-          }).catch(err => {
+          }).catch(function(err) {
             console.error('Failed to copy: ', err);
             showToast('Failed to copy tracking number', 'error');
           });
@@ -6146,7 +6338,7 @@
 
         // New Functions
         window.viewOrderTracking = function(orderId) {
-          const order = orders.find(o => o.id === orderId);
+          const order = orders.find(function(o) { return o.id === orderId; });
           if (!order) {
             showToast('Order not found', 'error');
             return;
@@ -6164,7 +6356,7 @@
           
           // Update timeline
           const timeline = document.getElementById('trackingTimeline');
-          timeline.innerHTML = tracking.steps.map(step => `
+          timeline.innerHTML = tracking.steps.map(function(step) { return `
             <div class="timeline-step">
               <div class="step-icon ${step.completed ? 'completed' : step.active ? 'active' : ''}">
                 <i class="fas fa-${step.completed ? 'check' : step.active ? 'spinner fa-spin' : 'circle'}"></i>
@@ -6175,7 +6367,7 @@
                 ${step.time ? `<div class="step-time">${step.time}</div>` : ''}
               </div>
             </div>
-          `).join('');
+          `; }).join('');
           
           // Show modal
           document.getElementById('trackingModal').classList.add('active');
@@ -6203,22 +6395,22 @@
 
         window.showService = function(serviceId) {
           switchSection('services');
-          setTimeout(() => {
-            const service = services.find(s => s.id === serviceId);
+          setTimeout(function() {
+            const service = services.find(function(s) { return s.id === serviceId; });
             if (service) {
               showToast(`Viewing ${service.title} service`, 'info');
               const element = document.querySelector(`[onclick*="${serviceId}"]`);
               if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 element.style.animation = 'pulse 0.5s ease';
-                setTimeout(() => element.style.animation = '', 500);
+                setTimeout(function() { element.style.animation = ''; }, 500);
               }
             }
           }, 100);
         };
 
         window.inquireService = function(serviceId) {
-          const service = services.find(s => s.id === serviceId);
+          const service = services.find(function(s) { return s.id === serviceId; });
           if (!service) return;
           
           const subject = `Inquiry: ${service.title} Service`;
@@ -6226,7 +6418,7 @@
           
           // Pre-fill contact form
           switchSection('contact');
-          setTimeout(() => {
+          setTimeout(function() {
             const contactForm = document.getElementById('contactForm');
             if (contactForm) {
               contactForm.querySelector('input[name="subject"]').value = subject;
@@ -6266,7 +6458,7 @@
         function updateCartCount() {
           const countElement = document.getElementById('cartCount');
           if (countElement) {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalItems = cart.reduce(function(sum, item) { return sum + item.quantity; }, 0);
             countElement.textContent = totalItems;
           }
         }
@@ -6282,7 +6474,7 @@
           const existingToast = document.querySelector('.toast');
           if (existingToast) {
             existingToast.classList.add('hide');
-            setTimeout(() => {
+            setTimeout(function() {
               if (existingToast.parentElement) {
                 existingToast.remove();
               }
@@ -6303,14 +6495,14 @@
           toast.offsetHeight;
           
           // Show toast
-          setTimeout(() => {
+          setTimeout(function() {
             toast.classList.add('show');
           }, 10);
           
           // Auto hide after 3 seconds
-          toastTimeout = setTimeout(() => {
+          toastTimeout = setTimeout(function() {
             toast.classList.add('hide');
-            setTimeout(() => {
+            setTimeout(function() {
               if (toast.parentElement) {
                 toast.remove();
               }
